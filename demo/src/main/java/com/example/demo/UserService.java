@@ -65,5 +65,8 @@ public class UserService {
 		
 		
 	}
+	public List<User> getuserbydob(){
+		return userRepository.findUserByDob();
+	}
 
 }

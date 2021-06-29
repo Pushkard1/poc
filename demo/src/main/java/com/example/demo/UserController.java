@@ -35,6 +35,12 @@ public class UserController {
 		return userService.getUserByName(name);
 	}
 	
+	@GetMapping("/asc")
+	public List<User> getUsersbyDob(){
+		return userService.getuserbydob();
+	}
+	
+	
 	@GetMapping("/api2/{surname}")
 	public List<User> getUsersBySurname(@PathVariable("surname") String surname){
 		return userService.getUserBySurname(surname);

@@ -10,6 +10,8 @@ import javax.persistence.Id;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
+import org.springframework.data.jpa.domain.Specification;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -102,5 +104,6 @@ public class User {
 		this.dob = dob;
 		this.doj = doj;
 	}
+	
 	
 }
