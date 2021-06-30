@@ -21,6 +21,15 @@ public class UserConfig {
 					LocalDate.of(2010, Month.JANUARY, 05)
 					
 					);
+			User  push2 =new User(
+					"push",
+					"Deshmukh",
+					"pushd@gmail.com",
+					421202,
+					LocalDate.of(2000, Month.JANUARY, 05),
+					LocalDate.of(2010, Month.JANUARY, 05)
+					
+					);
 			User  Test =new User(
 					"Test",
 					"Demo",
@@ -31,7 +40,7 @@ public class UserConfig {
 					
 					);
 			repository.saveAll(
-					List.of(push,Test)
+					List.of(push,push2,Test)
 					
 					);
 		};

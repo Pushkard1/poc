@@ -44,11 +44,66 @@ class UserRepositoryTests {
 	
 	@Test
 	public void testfindUserByName() {
+		User pushtest = new User("pushtest",
+				"Deshmukh",
+				"pushtest@gmail.com",
+				421202,
+				LocalDate.of(2000, Month.JANUARY, 05),
+				LocalDate.of(2010, Month.JANUARY, 05));
+		entitymanager.persist(pushtest);
 
-		User user2 =   (User) userRepository.findUserByName("push");
-		assertThat(user2.getName()).isEqualTo("push");
+		User pushtest2 = new User("pushtest",
+				"Deshmukh",
+				"pushtest2@gmail.com",
+				421202,
+				LocalDate.of(2000, Month.JANUARY, 05),
+				LocalDate.of(2010, Month.JANUARY, 05));
+		entitymanager.persist(pushtest2);
+		
+		User pushtest3 = new User("demotest",
+				"Deshmukh",
+				"demotest@gmail.com",
+				421202,
+				LocalDate.of(2000, Month.JANUARY, 05),
+				LocalDate.of(2010, Month.JANUARY, 05));
+		entitymanager.persist(pushtest3);
+		
+		Iterable<User> users = userRepository.findUserByName("pushtest");
+		
+		assertThat(users).hasSize(2).contains(pushtest,pushtest2);
+	
 	}
 	
+	@Test
+	public void testfindUserBySurname() {
+		User pushtest = new User("pushtest",
+				"Deshmukh",
+				"pushtest@gmail.com",
+				421202,
+				LocalDate.of(2000, Month.JANUARY, 05),
+				LocalDate.of(2010, Month.JANUARY, 05));
+		entitymanager.persist(pushtest);
+
+		User pushtest2 = new User("pushtest",
+				"Deshmukh",
+				"pushtest2@gmail.com",
+				421202,
+				LocalDate.of(2000, Month.JANUARY, 05),
+				LocalDate.of(2010, Month.JANUARY, 05));
+		entitymanager.persist(pushtest2);
+		
+		User pushtest3 = new User("demotest",
+				"test",
+				"demotest@gmail.com",
+				421202,
+				LocalDate.of(2000, Month.JANUARY, 05),
+				LocalDate.of(2010, Month.JANUARY, 05));
+		entitymanager.persist(pushtest3);
+		
+		Iterable<User> users = userRepository.findUserBySurname("Deshmukh");
+		
+		assertThat(users).hasSize(2).contains(pushtest,pushtest2);
 	
+	}
 
 }

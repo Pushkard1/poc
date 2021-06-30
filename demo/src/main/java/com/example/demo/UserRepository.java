@@ -21,7 +21,7 @@ public interface UserRepository extends JpaRepository<User, Long>,CrudRepository
 	List<User> findUserByName(String name);
 	List<User> findUserBySurname(String surname);
 	
-	@Query("SELECT u from user u ORDER BY u.dob,u.doj asc")
+	@Query("SELECT u FROM User u ORDER BY u.dob,u.doj asc")
 	List<User> findUserByDob();
 	
 

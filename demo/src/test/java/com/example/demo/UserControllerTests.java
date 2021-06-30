@@ -1,30 +1,35 @@
 package com.example.demo;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.CoreMatchers.is;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import java.net.http.HttpHeaders;
 import java.time.LocalDate;
 import java.time.Month;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
-import org.mockito.BDDMockito;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
-import net.bytebuddy.NamingStrategy.SuffixingRandom.BaseNameResolver.ForGivenType;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 
 @WebMvcTest(UserController.class)
@@ -34,13 +39,15 @@ public class UserControllerTests {
 	private MockMvc mockMvc;
 	
 	@Autowired
-	private UserRepository userRepository;
+	private ObjectMapper objectMapper;
 	
+	@MockBean
+	private UserRepository userRepository;
 	@MockBean
 	private UserService userService;
 	
 	@Test
-	public void getUsersTest() throws Exception {
+	public void getUser_Test() throws Exception {
 		User user = new User("pushde",
 				"Deshmukh",
 				"pushde@gmail.com",
@@ -48,27 +55,33 @@ public class UserControllerTests {
 				LocalDate.of(2000, Month.JANUARY, 05),
 				LocalDate.of(2010, Month.JANUARY, 05));
 		List<User> allUsers = Arrays.asList(user);
-		BDDMockito.given(userService.getUser()).willReturn(allUsers);
-	
-		mockMvc.perform(get("/api").contentType(MediaType.APPLICATION_JSON)).andExpect(status().isOk());
+		Mockito.when(userService.getUser()).thenReturn(allUsers);
+		MvcResult result = mockMvc.perform(get("/api")).andExpect(status().isOk()).andReturn();
+		String actualJsonResponse = result.getResponse().getContentAsString();
+		System.out.println(actualJsonResponse);
 		
-		
+		String expectedJsonResponse = objectMapper.writeValueAsString(allUsers);
+		assertThat(actualJsonResponse).isEqualToIgnoringWhitespace(expectedJsonResponse);
 	}
 	@Test
 	public void registerUser_test() throws Exception {
 		User user = new User("Test1",
 				"Deshmukh",
-				"test1@gmail.com",
+				"test12@gmail.com",
 				421202,
 				LocalDate.of(2000, Month.JANUARY, 05),
 				LocalDate.of(2010, Month.JANUARY, 05));
+		//String exampleUserJson = "{\"name\":\"PostTest\",\"surname\":\"Deshmukh\",\"email\":\"posttest1@gmail.com\",\"dob\":\"2000-01-05\",\"doj\":\"2000-01-05\"}";
+		when(userService.addNewUser(user)).thenReturn(user);
 		
-		BDDMockito.given(userService.addNewUser(user)).willReturn(user);
-		mockMvc.perform(post("/users")
+		MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.post("/api")
 		.contentType(MediaType.APPLICATION_JSON)
-		.content(JsonUtil.toJson(user)))
-		.andExpect(status().isCreated())
-		.andExpect(jsonPath("$.name", is(user.getName())));
+		.content(objectMapper.writeValueAsString(user))).andReturn();
+		
+		int status = mvcResult.getResponse().getStatus();
+		   assertEquals(201, status);
+		   String content = mvcResult.getResponse().getContentAsString();
+		
 		}
 
 	}

@@ -40,13 +40,14 @@ public class UserService {
 		return UserOptional;
 	}
 	
-	public void addNewUser(User user) {
+	public User addNewUser(User user) {
 		Optional<User> UserOptional= 
 				userRepository.findUserByEmail(user.getEmail());
 		if(UserOptional.isPresent()) {
 			throw new IllegalStateException("email Taken");
 		}
 		userRepository.save(user);
+		return user;
 	}
 
 	public void deleteUser(Long userId) {
@@ -68,5 +69,7 @@ public class UserService {
 	public List<User> getuserbydob(){
 		return userRepository.findUserByDob();
 	}
+
+	
 
 }
