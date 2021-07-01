@@ -48,10 +48,9 @@ public class UserController {
 	
 	
 	@PostMapping
-	public String registerNewUser(@RequestBody User user) {
-		
-		User userSaved = userService.addNewUser(user);
-		return String.valueOf(userSaved.getName());
+	public User registerNewUser(@RequestBody User user) {
+		 userService.addNewUser(user);
+		return user;
 	}
 	
 	

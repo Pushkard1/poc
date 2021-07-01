@@ -71,17 +71,16 @@ public class UserControllerTests {
 				421202,
 				LocalDate.of(2000, Month.JANUARY, 05),
 				LocalDate.of(2010, Month.JANUARY, 05));
-		//String exampleUserJson = "{\"name\":\"PostTest\",\"surname\":\"Deshmukh\",\"email\":\"posttest1@gmail.com\",\"dob\":\"2000-01-05\",\"doj\":\"2000-01-05\"}";
+		
 		when(userService.addNewUser(user)).thenReturn(user);
 		
-		MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.post("/api")
+		MvcResult mvcResult = mockMvc.perform(post("/api")
 		.contentType(MediaType.APPLICATION_JSON)
-		.content(objectMapper.writeValueAsString(user))).andReturn();
+		.content(objectMapper.writeValueAsString(user))).andExpect(status().isOk()).andReturn();
 		
-		int status = mvcResult.getResponse().getStatus();
-		   assertEquals(201, status);
-		   String content = mvcResult.getResponse().getContentAsString();
-		
+		String mvcResultContent = mvcResult.getResponse().getContentAsString();
+		User userTest = objectMapper.readValue(mvcResultContent, User.class);
+		assertThat(user.getName()=="Test1");
 		}
 
 	}
